@@ -1,0 +1,58 @@
+{% extends "dashboard/base_dash.html" %}
+{% block content %}
+<div class="content_inner_both">
+  <h4 class="mb-4 bg-secondary text-white title_custom">
+    Autocare Control View
+  </h4>
+  <div>
+    <label class="btn btn-outline-light btn-lg btn-primary mx-5 px-5"
+      >수 집</label
+    >
+    <lable
+      class="btn btn-outline-light btn-lg px-5 btn-primary mx-5 px-5"
+      >라벨링</lable
+    >
+    <lable
+      class="btn btn-outline-light btn-lg px-5 btn-primary mx-5 px-5"
+      >자동 학습</lable
+    >
+    <lable onclick="location.href='/autocare/do_learning/'"
+      class="btn btn-outline-light btn-lg px-5 btn-danger mx-5 px-5"
+      >학습 진행</lable
+    >
+  </div>
+</div>
+<div class="content_inner_layout">
+  <div class="inner_layout_2">
+    <h4 class="mb-4 bg-secondary text-white title_custom">
+      업체사용기록
+    </h4>
+    <table class="table">
+      <thead class="bg-dark text-white">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">업체명</th>
+          <th scope="col">IP</th>
+          <th scope="col">최종사용시간</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in history_list%}
+        <tr>
+          <th scope="row">{{item.count}}</th>
+          <td>{{item.company}}</td>
+          <td>{{item.ip}}</td>
+          <td>{{item.using_time}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="inner_layout_2">
+    <h4 class="mb-4 bg-secondary text-white title_custom">
+      이벤트 로그
+    </h4>
+    <textarea class="inner_textarea" rows="28">{% for log in event_log %}{{log}}{% endfor%}</textarea>
+  </div>
+</div>
+{% endblock %}

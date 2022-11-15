@@ -1,0 +1,152 @@
+{% extends "dashboard/base_dash.html" %}
+{% block content %}
+<div class="content_inner_both" class="text-dark">
+  <h4 class="mb-4 bg-secondary text-white title_custom">
+    Autocare Config
+  </h4>
+  <div class="row text-dark">
+    <form action="/autocare/setting_save/" method="post" enctype="multipart/form-data"> {% csrf_token %}
+      <div class="col-12 mb-5">
+        <div class="row mb-2">
+          <div class="col-1">
+            <lable class="label_contig_title">수 집</lable>
+          </div>
+          <div class="col-2">
+            {% if config_data.collection_oper == 'Y' %}
+            <lable onclick="location.href='/autocare/collection_set/Y/'"
+              class="btn btn-outline-light btn-lg btn-primary">
+              ON</lable>
+            <lable onclick="location.href='/autocare/collection_set/N/'" class="btn btn-outline-dark btn-lg btn-light">
+              OFF
+            </lable>
+            {% else %}
+            <lable onclick="location.href='/autocare/collection_set/Y/'" class="btn btn-outline-dark btn-lg btn-light">
+              ON
+            </lable>
+            <lable onclick="location.href='/autocare/collection_set/N/'"
+              class="btn btn-outline-light btn-lg btn-primary">
+              OFF</lable>
+            {% endif %}
+          </div>
+          <div class="col-1">
+            <lable class="label_contig_title">라벨링</lable>
+          </div>
+          <div class="col-2">
+            {% if config_data.labeling_oper == 'Y' %}
+            <lable onclick="location.href='/autocare/labeling_set/Y/'" class="btn btn-outline-light btn-lg btn-primary">
+              ON
+            </lable>
+            <lable onclick="location.href='/autocare/labeling_set/N/'" class="btn btn-outline-dark btn-lg btn-light">OFF
+            </lable>
+            {% else %}
+            <lable onclick="location.href='/autocare/labeling_set/Y/'" class="btn btn-outline-dark btn-lg btn-light">ON
+            </lable>
+            <lable onclick="location.href='/autocare/labeling_set/N/'" class="btn btn-outline-light btn-lg btn-primary">
+              OFF</lable>
+            {% endif %}
+          </div>
+          <div class="col-1">
+            <lable class="label_contig_title">학 습</lable>
+          </div>
+          <div class="col-2">
+            {% if config_data.learning_oper == 'Y' %}
+            <lable onclick="location.href='/autocare/learning_set/Y/'" class="btn btn-outline-light btn-lg btn-danger">
+              ON
+            </lable>
+            <lable onclick="location.href='/autocare/learning_set/N/'" class="btn btn-outline-dark btn-lg btn-light">OFF
+            </lable>
+            {% else %}
+            <lable onclick="location.href='/autocare/learning_set/Y/'" class="btn btn-outline-dark btn-lg btn-light">ON
+            </lable>
+            <lable onclick="location.href='/autocare/learning_set/N/'" class="btn btn-outline-light btn-lg btn-danger">
+              OFF
+            </lable>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-1">
+            <lable class="label_contig_title">학습주기</lable>
+          </div>
+          <div class="col-2">
+            <select name="learning_cycle" class="form-control">
+              {% if config_data.learning_cycle == "1D" %}
+                <option selected value="1D">1 일</option>
+                <option value="1W">일주일</option>
+                <option value="1M">한 달</option>
+              {% elif config_data.learning_cycle == "1W" %}
+              <option value="1D">1 일</option>
+              <option selected value="1W">일주일</option>
+              <option value="1M">한 달</option>
+              {% else %}
+                <option value="1D">1 일</option>
+                <option value="1W">일주일</option>
+                <option selected value="1M">한 달</option>
+              {% endif %}
+            </select>
+          </div>
+          <div class="col-1">
+            <lable class="label_contig_title">시작시간</lable>
+          </div>
+          <div class="col-2">
+            <select name="learning_start" class="form-control">
+              {% if config_data.learning_start == "0" %}
+              <option selected value="0">0 시</option>
+              <option value="6">6 시</option>
+              <option value="12">12 시</option>
+              <option value="18">18 시</option>
+              {% elif config_data.learning_start == "6" %}
+              <option value="0">0 시</option>
+              <option selected value="6">6 시</option>
+              <option value="12">12 시</option>
+              <option value="18">18 시</option>
+              {% elif config_data.learning_start == "12" %}
+              <option value="0">0 시</option>
+              <option value="6">6 시</option>
+              <option selected value="12">12 시</option>
+              <option value="18">18 시</option>
+              {% else %}
+              <option value="0">0 시</option>
+              <option value="6">6 시</option>
+              <option value="12">12 시</option>
+              <option selected value="18">18 시</option>
+              {% endif %}
+            </select>
+          </div>
+        </div>
+      </div>
+      {% for model in model_list%}
+        <div class="row mb-2">
+          <div class="col-3">
+            <lable name="model_id" class="label_contig_title" value="{{model.model_id}}">{{model.model_name}} 모델 배포</lable>
+          </div>
+          <div class="col-9">
+            <textarea name="model_path" class="form-control" rows="1">{{model.model_path}}{{model.model_file}}</textarea>
+          </div>
+        </div>
+      {% endfor%}
+
+      <hr />
+      {% for model in model_list%}
+      <div class="row mb-2">
+        <div class="col-3">
+          <lable class="label_contig_title">{{model.model_name}} URL</lable>
+        </div>
+        <div class="col-9">
+          <textarea name="model_api" class="form-control" rows="1">{{model.model_api}}</textarea>
+        </div>
+      </div>
+    {% endfor%}
+
+      <div class="row">
+        <div class="col-12 text-center">
+          <button type="submit" class="btn btn-outline-light btn-lg px-5 btn-danger mx-5 px-5">
+            저 장
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

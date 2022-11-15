@@ -1,0 +1,102 @@
+{% extends "dashboard/base_dash.html" %}
+{% block content %}
+<div class="content_inner_both">
+  <form action="/autocare/company_search/" method="post" enctype="multipart/form-data">  {% csrf_token %}
+    <div class="row text-dark mb-2">
+    <div class="col-2 label_contig_title">업체 검색</div>
+    <div class="col-6"><input name="company_name" type="text" class="form-control"></input></div>
+    <div class="col-2">
+      <button type="submit" class="btn btn-outline-light  px-5 btn-danger px-5">검 색</button>
+    </div>
+  </div>
+  </form>
+  
+</div>
+<div class="content_inner_layout">
+  <div class="inner_layout_2">
+    <h4 class="mb-4 bg-secondary text-white title_custom">
+      업체 정보
+    </h4>
+    <div class="row">
+      <div class="col-12">
+        <table class="table">
+          <thead class="bg-dark text-white">
+            <tr>
+              <th scope="col">업체명</th>
+              <th scope="col">IP</th>
+              <th scope="col">TOKEN</th>
+              <th scope="col">사용여부</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              {% for item in company_list %}
+            <tr>
+              <th scope="row">
+                {% if item.company_name|length > 15 %}
+                  {{item.company_name|slice:15}} ...
+                {% else %}
+                  {{item.company_name}}
+                {% endif %}
+              </th>
+              <td>{{item.company_ip}}</td>
+              <td>
+                {% if item.company_token|length > 20 %}
+                  {{item.company_token|slice:20}} ...
+                {% else %}
+                  {{item.company_token}}
+                {% endif %}
+              </td>
+              <td>{{item.company_operation}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="col-6 text-start">
+        <button class="btn btn-primary btn-lg mx-5 px-5">수 정</button>
+      </div>
+      <div class="col-6 text-end">
+        <button class="btn btn-danger btn-lg mx-5 px-5">삭 제</button>
+      </div>
+    </div>
+  </div>
+  <div class="inner_layout_2">
+    <form action="/autocare/company_set/" method="post" enctype="multipart/form-data"> {% csrf_token %}
+      <div class="row mb-3">
+
+        <div class="col-3"><button type="reset" class="btn btn-info mx-2 px-2">초기화</button></div>
+        <div class="col-8">
+          <input type="text" class="form-control" readonly="readonly"></input>
+        </div>
+      </div>
+      <hr />
+      <div class="row mb-3">
+        <div class="col-3">업체명</div>
+        <div class="col-8"><input name="company_name" type="text" class="form-control"></input></div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-3">IP</div>
+        <div class="col-8"><input name="company_ip" type="text" class="form-control"></input></div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-3">사용여부</div>
+        <div class="col-8">
+          <select name="company_operation" class="form-select" aria-label="Default select example">
+            <!-- <option selected>Open this select menu</option> -->
+            <option value="Y">사용</option>
+            <option value="N">미사용</option>
+            <!-- <option value="3">Three</option> -->
+          </select>
+          <!-- <input name="company_operation" type="text" class="form-control"></input> -->
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-12 text-center">
+          <button type="submit" class="btn btn-warning btn-lg mx-5 px-5">등 록</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
