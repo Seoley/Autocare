@@ -25,7 +25,7 @@ class ConfigMethod():
     def get():
         config_data = CrConfig.objects.all()[0]
         return config_data
-    def set(collection_oper=None, labeling_oper=None, learning_oper=None, learning_cycle=None, learning_start=None):
+    def set(collection_oper=None, labeling_oper=None, learning_oper=None, learning_cycle=None, learning_start=None, start_date=None):
         
         config_data = CrConfig.objects.all()[0] #프로토타입에서는 config 테이블에서 첫 번째 줄 값만 사용
 
@@ -39,6 +39,9 @@ class ConfigMethod():
             config_data.learning_cycle = learning_cycle
         if learning_start is not None:
             config_data.learning_start = learning_start
+        if start_date is not None:
+            config_data.start_date = start_date
+
 
         config_data.save()
         

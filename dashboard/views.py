@@ -42,8 +42,8 @@ class autocareinfo(View):
         event_log = f.readlines()
         f.close()
 
-        if len(event_log) > 20:
-            event_log = event_log[-20:]
+        if len(event_log) > 27:
+            event_log = event_log[-27:]
 
 
         context = {"page": "info", "history_list": history_list, "event_log": event_log}

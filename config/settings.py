@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import os
 import datetime
+from apscheduler.schedulers.background import BackgroundScheduler
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +28,7 @@ SECRET_KEY = 'django-insecure-u*ws(4m+s90gwk@v+5-ztbafyh2nktoah7n+2u+#v_udi4r-3z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['133.186.215.12']
+ALLOWED_HOSTS = ['133.186.215.12','localhost']
 
 
 # Application definition
@@ -42,7 +43,7 @@ INSTALLED_APPS = [
     'dashboard.apps.DashboardConfig',
     'rest_framework',
     'rest_framework.authtoken',
-    'django_crontab',
+    'django_apscheduler',
 ]
 
 MIDDLEWARE = [
@@ -145,3 +146,10 @@ JWT_AUTH = {
     'JWT_AUTH_HEADER_PREFIX': 'Token',
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
 }
+
+
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"  # Default
+
+SCHEDULER_DEFAULT = True
+
+AUTO_SCHEDULER = BackgroundScheduler(timezone='Asia/Seoul')

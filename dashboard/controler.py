@@ -19,6 +19,10 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 import datetime
 
+from .operator import get_schedule
+from .autocare import autocare, logger
+# from django.conf import settings
+
 # http://www.iorchard.net/2016/07/11/curl_django_csrf_token_transmit.html
 class company_control(APIView):
     # 토큰발행 https://uiandwe.tistory.com/1277
@@ -86,8 +90,12 @@ class config_control(APIView):
         return redirect('/autocare/config/')
 
     def learning_set(request, learning_oper):
-        ConfigMethod.set(learning_oper = learning_oper)
+        now = datetime.datetime.now()
+        ConfigMethod.set(learning_oper = learning_oper, start_date=now)
         logger.update_learning(learning_oper)
+        get_schedule(learning_oper)
+
+        
         return redirect('/autocare/config/')
 
 
@@ -97,112 +105,3 @@ class info_control(APIView):
         autocare.learning(2, 0)
         return redirect('/autocare/info/')
 
-class autocare():
-    def learning(model_id, case):
-        # case - 0: 자동학습 1: 강제학습
-        model_data = ModelMethod.get(model_id)
-        model_name = model_data.model_name
-        model_path = model_data.model_path
-        model_file = model_path + model_data.model_file
-        model = tf.keras.models.load_model(model_file)
-        dataset = pd.read_csv(model_data.data_path)
-
-        x_data = dataset.iloc[:,:-1]
-        y_data = dataset.iloc[:,-1]
-
-        x_data = np.array(x_data)
-        y_data = np.array(y_data)
-
-        x_data = x_data.reshape(-1,125,1)
-        y_data = tf.keras.utils.to_categorical(y_data,2)
-
-        x_train, x_test, y_train, y_test = train_test_split(x_data, y_data, train_size=0.8, random_state=1, shuffle=True)
-
-        model.fit(x_train,y_train,epochs=1,batch_size=128, validation_data=(x_test, y_test))
-
-        now = datetime.datetime.now()
-        format = '%Y%m%d%H%M%S%Z'
-        file_date = datetime.datetime.strftime(now,format)
-
-        new_rname =  model_data.model_rname + '_' + file_date + '.h5'
-
-        print(new_rname)
-
-        ModelMethod.set(model_id=model_id,model_file=new_rname)
-
-        model.save(model_path + new_rname)
-        if case == 0:
-            logger.update_model(model_name)
-        else:
-            logger.auto_update_model(model_name)
-
-
-        return
-
-class logger():
-    def update_model(model_name):
-        logging_time = logger.get_time()
-        log = logging_time + model_name + " 모델 업데이트 진행"
-        logger.set_log(log)
-        return 
-
-    def auto_update_model(model_name):
-        logging_time = logger.get_time()
-        log = logging_time + model_name + " 모델 자동 업데이트"
-        logger.set_log(log)
-        return 
-    
-    def create_company(company_name):
-        logging_time = logger.get_time()
-        log = logging_time + company_name + " 신규 업체 등록"
-        logger.set_log(log)
-        return 
-    
-    def update_collection(case):
-        # case N: 미수집 Y: 수집
-        logging_time = logger.get_time()
-        if case == 'N':
-            log = logging_time + "데이터 자동 수집 종료"
-        else:
-            log = logging_time + "데이터 자동 수집 진행"
-        logger.set_log(log)
-        return 
-    
-    def update_labeling(case):
-        # case N: 미수집 Y: 수집
-        logging_time = logger.get_time()
-        if case == 'N':
-            log = logging_time + "데이터 자동 라벨링 종료"
-        else:
-            log = logging_time + "데이터 자동 라벨링 진행"
-        logger.set_log(log)
-        return 
-
-    def update_learning(case):
-        # case N: 미사용 Y: 사용
-        logging_time = logger.get_time()
-        if case == 'N':
-            log = logging_time + "모델 자동 학습 종료"
-        else:
-            log = logging_time + "모델 자동 학습 진행"
-        logger.set_log(log)
-        return 
-
-    def update_config():
-        logging_time = logger.get_time()
-        log = logging_time + "환경 설정 수정"
-        logger.set_log(log)
-        return 
-
-    def get_time():
-        now = datetime.datetime.now()
-        time = now.strftime("%d/%b/%Y %H:%M:%S")
-        logging_time = '[' + time + '] '
-        return logging_time
-    
-    def set_log(log):
-        f = open('config/event.log', "a", encoding="UTF-8")
-        f.write(log)
-        f.write("\n")
-        f.close()
-        return
