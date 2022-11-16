@@ -152,4 +152,4 @@ APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"  # Default
 
 SCHEDULER_DEFAULT = True
 
-AUTO_SCHEDULER = BackgroundScheduler(timezone='Asia/Seoul')
+AUTO_SCHEDULER = BackgroundScheduler()
