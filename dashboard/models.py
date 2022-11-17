@@ -54,6 +54,7 @@ class CrModelInfo(models.Model):
     model_api = models.CharField(max_length=200, blank=True, null=True)
     data_path = models.CharField(max_length=200, blank=True, null=True)
     model_file = models.CharField(max_length=200, blank=True, null=True)
+    model_origin = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
         managed = False

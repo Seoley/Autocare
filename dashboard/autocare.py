@@ -5,6 +5,7 @@ import datetime
 from sklearn.model_selection import train_test_split
 import pandas as pd
 from .logger import logger
+import os
 
 class autocare():
     def learning(model_id, case):
@@ -12,10 +13,16 @@ class autocare():
         model_data = ModelMethod.get(model_id)
         model_name = model_data.model_name
         model_path = model_data.model_path
-        model_file = model_path + model_data.model_file
+        model_origin = model_data.model_origin
+        if os.path.isfile(model_path + model_data.model_file):
+            model_file = model_path + model_data.model_file
+        else:
+            model_file = model_path+model_origin
+
         model = tf.keras.models.load_model(model_file)
         dataset = pd.read_csv(model_data.data_path)
 
+        print(model_origin)
         x_data = dataset.iloc[:,:-1]
         y_data = dataset.iloc[:,-1]
 
@@ -38,7 +45,7 @@ class autocare():
         print(new_rname)
 
         ModelMethod.set(model_id=model_id,model_file=new_rname)
-
+        
         model.save(model_path + new_rname)
         if case == 0:
             logger.update_model(model_name)

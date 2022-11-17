@@ -22,19 +22,13 @@ def get_schedule(learning_oper):
 
         print("Set up Schedule")
 
-        # 코드 테스트용
-        # 1시간에 한번씩 실행
-        # if learning_cycle =='1D':
-        #     scheduler.add_job(auto_learning, 'cron', id='auto_learning' ,hour=learning_start)
-        # elif learning_cycle == '1W':
-        #     weekday = start_date.weekday()
-        #     scheduler.add_job(auto_learning, 'cron', id='auto_learning' ,day_of_week=weekday, hour=learning_start)
-        # elif learning_cycle == '1M':
-        #     day = start_date.day
-        #     scheduler.add_job(auto_learning, 'cron', id='auto_learning' ,day=day, hour=learning_start)
-
-        scheduler.add_job(auto_learning, 'cron', id='auto_learning' ,hour='0-23')
-        # 테스트용 종료(위에거랑 교체해야함)
+        if learning_cycle =='1D':
+            scheduler.add_job(auto_learning, 'cron', id='auto_learning' ,hour=learning_start)
+        elif learning_cycle == '1W':
+            weekday = start_date.weekday()
+            scheduler.add_job(auto_learning, 'cron', id='auto_learning' ,day_of_week=weekday, hour=learning_start)
+        elif learning_cycle == '1M':
+            day = start_date.day
 
         scheduler.start()
         print("Start auto learning")
